@@ -28,31 +28,41 @@
   #pitch { z-index: 0; }
   #fx { z-index: 5; pointer-events: none; }
 
-  .ui { position: fixed; inset: 0; z-index: 2; display: grid; grid-template-columns: 1fr 1fr; }
+  /* The two halves sit below the top bar (--top is measured in JS).
+     Side by side in landscape; stacked (home on top) in portrait. */
+  .ui {
+    position: fixed; inset: 0; z-index: 2; display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr);
+    padding-top: var(--top, 70px);
+  }
+  body.portrait .ui { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) minmax(0, 1fr); }
   .side {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: min(2.2vh, 2vw); padding: calc(env(safe-area-inset-top) + min(15vh, 120px)) 3vw 3vh;
+    container-type: size; overflow: hidden; min-width: 0; min-height: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: space-evenly;
+    padding: 1% 3% 2%;
   }
   #side0 { background: linear-gradient(90deg, color-mix(in srgb, var(--c) 38%, transparent), color-mix(in srgb, var(--c) 8%, transparent)); }
   #side1 { background: linear-gradient(270deg, color-mix(in srgb, var(--c) 38%, transparent), color-mix(in srgb, var(--c) 8%, transparent)); }
+  body.portrait #side0 { background: linear-gradient(180deg, color-mix(in srgb, var(--c) 38%, transparent), color-mix(in srgb, var(--c) 8%, transparent)); }
+  body.portrait #side1 { background: linear-gradient(0deg, color-mix(in srgb, var(--c) 38%, transparent), color-mix(in srgb, var(--c) 8%, transparent)); }
 
-  .teamrow { display: flex; align-items: center; gap: .5rem; width: min(100%, 34rem); }
+  .teamrow { display: flex; align-items: center; gap: 2cqw; width: min(100%, 34rem); }
   .name {
-    flex: 1; min-width: 0; font: inherit; font-size: min(6vh, 5vw); text-align: center; color: #fff;
-    background: var(--c); border: 4px solid #fff; border-radius: 999px; padding: .15em .6em;
-    box-shadow: 0 6px 0 rgba(0,0,0,.25); text-shadow: 0 2px 0 rgba(0,0,0,.3); outline: none;
+    flex: 1; min-width: 0; font: inherit; font-size: min(8.5cqh, 8cqw); text-align: center; color: #fff;
+    background: var(--c); border: 4px solid #fff; border-radius: 999px; padding: .1em .6em;
+    box-shadow: 0 5px 0 rgba(0,0,0,.25); text-shadow: 0 2px 0 rgba(0,0,0,.3); outline: none;
     user-select: text; -webkit-user-select: text;
   }
-  .name:focus { box-shadow: 0 0 0 6px #ffe600, 0 6px 0 rgba(0,0,0,.25); }
+  .name:focus { box-shadow: 0 0 0 6px #ffe600, 0 5px 0 rgba(0,0,0,.25); }
   .swatch {
-    position: relative; flex: none; width: min(6vh, 5vw); height: min(6vh, 5vw); min-width: 34px; min-height: 34px;
+    position: relative; flex: none; width: min(10cqh, 9cqw); height: min(10cqh, 9cqw); min-width: 30px; min-height: 30px;
     border-radius: 50%; border: 4px solid #fff; background: conic-gradient(#ff3b5c, #ffb800, #ffe600, #3ddc4a, #1e90ff, #a24dff, #ff3b5c);
-    box-shadow: 0 6px 0 rgba(0,0,0,.25); cursor: pointer;
+    box-shadow: 0 5px 0 rgba(0,0,0,.25); cursor: pointer;
   }
   .swatch input { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; border: 0; padding: 0; }
 
   .score {
-    font-size: min(34vh, 30vw); line-height: .9; color: #fff;
+    font-size: min(40cqh, 55cqw); line-height: .85; color: #fff;
     text-shadow: 0 .06em 0 var(--c), 0 .1em 0 rgba(0,0,0,.35), 0 0 .25em rgba(0,0,0,.35);
     -webkit-text-stroke: .025em var(--c);
     font-variant-numeric: tabular-nums;
@@ -64,7 +74,7 @@
 
   button { font: inherit; cursor: pointer; border: 0; color: #fff; }
   .goal {
-    font-size: min(9vh, 8vw); padding: .25em 1.1em; border-radius: 999px; letter-spacing: .04em;
+    font-size: min(12cqh, 12cqw); padding: .2em 1.1em; border-radius: 999px; letter-spacing: .04em; max-width: 100%;
     background: linear-gradient(180deg, color-mix(in srgb, var(--c) 70%, #fff), var(--c) 55%);
     border: 5px solid #fff; text-shadow: 0 3px 0 rgba(0,0,0,.3);
     box-shadow: 0 .14em 0 color-mix(in srgb, var(--c) 55%, #000), 0 .3em .6em rgba(0,0,0,.35);
@@ -74,32 +84,31 @@
   .goal:active { transform: translateY(.1em) scale(.97); box-shadow: 0 .04em 0 color-mix(in srgb, var(--c) 55%, #000); animation: none; }
   @keyframes pulse { 0%,100% { scale: 1; } 50% { scale: 1.04; } }
   .minus {
-    font-size: min(3.4vh, 3.6vw); padding: .35em 1em; border-radius: 999px;
+    font-size: max(13px, min(5cqh, 4.6cqw)); padding: .3em 1em; border-radius: 999px;
     background: rgba(0,0,0,.35); border: 3px solid rgba(255,255,255,.8);
   }
   .minus:active { background: rgba(0,0,0,.6); }
 
+  /* compact top bar: [Start] [clock] [Menu] in one row */
   .topbar {
-    position: fixed; z-index: 3; top: calc(env(safe-area-inset-top) + 1.5vh); left: 50%; transform: translateX(-50%);
-    display: flex; flex-direction: column; align-items: center; gap: .5vh;
+    position: fixed; z-index: 3; top: calc(env(safe-area-inset-top) + 8px); left: 50%; transform: translateX(-50%);
+    display: flex; align-items: center; gap: clamp(6px, 1.2vw, 14px); white-space: nowrap;
   }
   .clock {
-    font-size: min(8vh, 7vw); line-height: 1; padding: .12em .5em; border-radius: .35em;
+    font-size: clamp(22px, min(8vh, 7vw), 72px); line-height: 1; padding: .1em .4em; border-radius: .35em;
     background: #111a; border: 4px solid #ffe600; color: #ffe600; font-variant-numeric: tabular-nums;
-    text-shadow: 0 0 .3em rgba(255,230,0,.6); box-shadow: 0 6px 0 rgba(0,0,0,.3);
+    text-shadow: 0 0 .3em rgba(255,230,0,.6); box-shadow: 0 5px 0 rgba(0,0,0,.3);
   }
   .clock.paused { animation: blink 1.2s steps(2, start) infinite; }
   @keyframes blink { to { opacity: .45; } }
-  .controls { display: flex; gap: .4rem; flex-wrap: wrap; justify-content: center; }
   .ctrl {
-    font-size: min(2.8vh, 3.2vw); padding: .3em .8em; border-radius: 999px; white-space: nowrap;
+    font-size: clamp(13px, min(3.4vh, 3.6vw), 30px); padding: .35em .75em; border-radius: 999px; white-space: nowrap;
     background: #fff; color: #222; box-shadow: 0 4px 0 rgba(0,0,0,.3);
   }
   .ctrl:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,.3); }
   .ctrl.go { background: #ffe600; }
   .ctrl.off { background: #bbb; color: #555; text-decoration: line-through; }
 
-  .credit { position: fixed; z-index: 3; right: 8px; bottom: 4px; font: 10px system-ui, sans-serif; color: #fff; opacity: .45; pointer-events: none; }
   #flash {
     position: fixed; z-index: 6; inset: 0; display: grid; place-items: center; pointer-events: none;
     font-size: min(30vh, 22vw); color: #ffe600; opacity: 0;
@@ -115,10 +124,19 @@
     100% { opacity: 0; transform: scale(1.6); }
   }
   .ctrl:disabled { opacity: .6; }
-  .ctrl.small { font-size: min(2.3vh, 2.8vw); }
+  .menugrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 210px), 1fr)); gap: 12px; }
+  .mbtn {
+    font-size: 1.35rem; padding: .55em .8em; border-radius: 18px; text-align: left; white-space: nowrap;
+    background: #e9f7ec; color: #155c27; border: 3px solid #1f9a3a; box-shadow: 0 4px 0 #9bd3a8;
+  }
+  .mbtn:active { transform: translateY(3px); box-shadow: none; }
+  .mbtn[hidden] { display: none; }
+  .mbtn.go { background: #ffe600; border-color: #c9b500; color: #222; box-shadow: 0 4px 0 #c9b500; }
+  .mbtn.off { background: #eee; border-color: #bbb; color: #888; box-shadow: 0 4px 0 #ccc; }
+  .credits { margin-top: 18px; font-size: .8rem; }
   .clock.ending { color: #ff3b5c; border-color: #ff3b5c; animation: blink .5s steps(2, start) infinite; }
 
-  .modal { position: fixed; inset: 0; z-index: 10; display: grid; place-items: center; padding: 16px; background: rgba(0, 30, 10, .65); }
+  .modal { position: fixed; inset: 0; z-index: 10; display: grid; grid-template-columns: minmax(0, 1fr); place-items: center; padding: 16px; background: rgba(0, 30, 10, .65); }
   .modal[hidden] { display: none; }
   .card {
     position: relative; width: min(760px, 100%); max-height: calc(100dvh - 32px); overflow: auto;
@@ -169,21 +187,10 @@
 
 <div class="ui" id="ui"></div>
 
-<div class="topbar">
+<div class="topbar" id="topbar">
+  <button class="ctrl go" id="startBtn">▶ Start</button>
   <div class="clock paused" id="clock">00:00</div>
-  <div class="controls">
-    <button class="ctrl go" id="startBtn">▶ Start</button>
-    <button class="ctrl" id="endBtn">🏁 Full Time</button>
-    <button class="ctrl" id="newBtn">↺ New Game</button>
-    <button class="ctrl" id="resultsBtn">🏆 Results</button>
-  </div>
-  <div class="controls">
-    <button class="ctrl small" id="limitBtn">⏱ No time limit</button>
-    <button class="ctrl small" id="musicBtn">🎵 Music</button>
-    <button class="ctrl small" id="sfxBtn">🎺 Fanfare</button>
-    <button class="ctrl small" id="fsBtn">⛶ Full Screen</button>
-    <button class="ctrl small go" id="installBtn" hidden>📲 Install app</button>
-  </div>
+  <button class="ctrl" id="menuBtn">☰ Menu</button>
 </div>
 
 <div id="flash">GOAL!</div>
@@ -191,7 +198,22 @@
 <div class="modal" id="modal" hidden>
   <div class="card" role="dialog" aria-modal="true"><button class="close" aria-label="Close">✕</button><div class="body"></div></div>
 </div>
-<div class="credit">Instruments: FluidR3 GM soundfont (MIT)</div>
+<div class="modal" id="menu" hidden>
+  <div class="card" role="dialog" aria-modal="true" aria-label="Menu"><button class="close" aria-label="Close">✕</button>
+    <h2>☰ Menu</h2>
+    <div class="menugrid">
+      <button class="mbtn" id="endBtn">🏁 Full Time</button>
+      <button class="mbtn" id="newBtn">↺ New Game</button>
+      <button class="mbtn" id="resultsBtn">🏆 Results</button>
+      <button class="mbtn" id="limitBtn">⏱ No time limit</button>
+      <button class="mbtn toggle" id="musicBtn">🎵 Music</button>
+      <button class="mbtn toggle" id="sfxBtn">🎺 Fanfare</button>
+      <button class="mbtn" id="fsBtn">⛶ Full Screen</button>
+      <button class="mbtn go" id="installBtn" hidden>📲 Install app</button>
+    </div>
+    <p class="note credits">Font: Lilita One (SIL OFL) · Instruments: FluidR3 GM soundfont (MIT)</p>
+  </div>
+</div>
 
 <script>
 /* Sound samples (base64 MP3).
@@ -305,13 +327,12 @@ const SOUNDS = {"trumpet": {"E4": "//uQZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
     clock.textContent = state.limit ? fmt(Math.ceil(left / 1000) * 1000) : fmt(el);
     clock.classList.toggle('paused', !running() && !state.finished);
     clock.classList.toggle('ending', !!state.limit && running() && left <= 10000);
-    startBtn.textContent = state.finished ? '🏁 Full Time' : running() ? '⏸ Pause' : (state.elapsed ? '▶ Resume' : '▶ Start');
-    startBtn.disabled = state.finished;
+    startBtn.textContent = state.finished ? '↺ New Game' : running() ? '⏸ Pause' : (state.elapsed ? '▶ Resume' : '▶ Start');
     endBtn.hidden = state.finished;
     limitBtn.textContent = '⏱ ' + (state.limit ? state.limit + ' min game' : 'No time limit');
   }
   startBtn.addEventListener('click', () => {
-    if (state.finished) return;
+    if (state.finished) return resetGame();
     if (running()) { state.elapsed = elapsedMs(); state.startedAt = null; releaseWake(); }
     else { state.startedAt = Date.now(); whistle(); keepAwake(); decodeAll(audio()).then(() => music.start()); }
     save(); updateClock();
@@ -497,6 +518,25 @@ const SOUNDS = {"trumpet": {"E4": "//uQZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
   });
   sfxBtn.addEventListener('click', () => { state.sfx = !state.sfx; save(); showToggles(); });
   showToggles();
+
+  // ---------- Menu ----------
+  const menu = document.getElementById('menu');
+  document.getElementById('menuBtn').addEventListener('click', () => { menu.hidden = false; });
+  menu.querySelector('.close').addEventListener('click', () => { menu.hidden = true; });
+  menu.addEventListener('click', e => {
+    if (e.target === menu) menu.hidden = true;
+    // every menu button except the on/off switches closes the menu
+    const b = e.target.closest('.mbtn');
+    if (b && !b.classList.contains('toggle')) menu.hidden = true;
+  });
+  addEventListener('keydown', e => { if (e.key === 'Escape') menu.hidden = true; });
+
+  // keep the team halves clear of the top bar, whatever its size
+  const topbar = document.getElementById('topbar');
+  const fitTop = () => document.documentElement.style.setProperty('--top', Math.ceil(topbar.getBoundingClientRect().bottom + 8) + 'px');
+  new ResizeObserver(fitTop).observe(topbar);
+  addEventListener('resize', fitTop);
+  fitTop();
 
   // ---------- Installable app (PWA) ----------
   // The service worker needs the page served over https:// (or http://localhost), not opened as a file.
@@ -695,33 +735,36 @@ const SOUNDS = {"trumpet": {"E4": "//uQZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
   const pitch = document.getElementById('pitch'), pc = pitch.getContext('2d');
   const fx = document.getElementById('fx'), fc = fx.getContext('2d');
   const bg = document.createElement('canvas'), bc = bg.getContext('2d');
-  let W, H, dpr, F; // F = field rect in px + scale
+  let W, H, dpr, F, portrait = false; // F = field rect in px + scale
   const FL = 105, FW = 68; // pitch size in metres
 
   function resize() {
     dpr = Math.min(window.devicePixelRatio || 1, 2);
     W = innerWidth; H = innerHeight;
+    portrait = H > W * 1.05;
+    document.body.classList.toggle('portrait', portrait);
     for (const c of [pitch, fx, bg]) { c.width = W * dpr; c.height = H * dpr; }
     for (const c of [pc, fc, bc]) c.setTransform(dpr, 0, 0, dpr, 0, 0);
     const mx = W * 0.05, my = H * 0.05;
     F = { x: mx, y: my, w: W - 2 * mx, h: H - 2 * my };
-    F.sx = F.w / FL; F.sy = F.h / FW; F.s = Math.min(F.sx, F.sy);
+    // su = px per metre along the pitch length, sv = across its width
+    if (portrait) { F.su = F.h / FL; F.sv = F.w / FW; } else { F.su = F.w / FL; F.sv = F.h / FW; }
+    F.s = Math.min(F.su, F.sv);
+    F.rx = portrait ? F.sv : F.su; F.ry = portrait ? F.su : F.sv; // px per metre on screen x / y
     drawPitch();
   }
-  const X = u => F.x + u * F.sx, Y = v => F.y + v * F.sy;
+  // pitch position (u along the length, v across) -> screen [x, y]
+  const P = (u, v) => portrait ? [F.x + v * F.sv, F.y + u * F.su] : [F.x + u * F.su, F.y + v * F.sv];
 
   function drawPitch() {
     const c = bc;
     c.fillStyle = '#1f9a3a'; c.fillRect(0, 0, W, H);
-    // mown stripes
+    // mown stripes across the length of the pitch
     const n = 14;
-    for (let i = 0; i < n; i++) {
-      c.fillStyle = i % 2 ? '#34c759' : '#2bb64e';
-      c.fillRect(F.x + (F.w / n) * i, F.y, F.w / n + 1, F.h);
-    }
+    for (let i = 0; i < n; i++) { c.fillStyle = i % 2 ? '#34c759' : '#2bb64e'; fillRect(FL / n * i, 0, FL / n * (i + 1) + 0.05, FW); }
     c.strokeStyle = 'rgba(255,255,255,.95)'; c.fillStyle = '#fff';
     c.lineWidth = Math.max(2, F.s * 0.35); c.lineJoin = 'round';
-    c.strokeRect(F.x, F.y, F.w, F.h);
+    box(0, FL, 0, FW);
     line(FL / 2, 0, FL / 2, FW);
     ellipse(FL / 2, FW / 2, 9.15); dot(FL / 2, FW / 2);
     for (const side of [0, 1]) {
@@ -729,26 +772,31 @@ const SOUNDS = {"trumpet": {"E4": "//uQZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
       box(m(0), m(16.5), FW / 2 - 20.15, FW / 2 + 20.15);
       box(m(0), m(5.5), FW / 2 - 9.15, FW / 2 + 9.15);
       dot(m(11), FW / 2);
-      // penalty arc
-      c.save(); c.beginPath(); c.rect(side ? F.x : X(16.5), F.y, side ? X(FL - 16.5) - F.x : F.w, F.h); c.clip();
+      // penalty arc: only the part outside the box
+      c.save(); c.beginPath(); rectPath(side ? 0 : 16.5, 0, side ? FL - 16.5 : FL, FW); c.clip();
       ellipse(m(11), FW / 2, 9.15); c.restore();
       // goal + net
-      const gx0 = X(m(0)), gx1 = X(side ? FL + 2.4 : -2.4), gy0 = Y(FW / 2 - 3.66), gy1 = Y(FW / 2 + 3.66);
+      const u0 = m(0), u1 = side ? FL + 2.4 : -2.4, v0 = FW / 2 - 3.66, v1 = FW / 2 + 3.66;
       c.save();
-      c.fillStyle = 'rgba(255,255,255,.25)'; c.fillRect(Math.min(gx0, gx1), gy0, Math.abs(gx1 - gx0), gy1 - gy0);
+      c.fillStyle = 'rgba(255,255,255,.25)'; fillRect(u0, v0, u1, v1);
       c.lineWidth = 1; c.strokeStyle = 'rgba(255,255,255,.6)';
-      for (let y = gy0; y <= gy1; y += 6) { c.beginPath(); c.moveTo(gx0, y); c.lineTo(gx1, y); c.stroke(); }
-      for (let k = 0; k <= 4; k++) { const x = gx0 + (gx1 - gx0) * k / 4; c.beginPath(); c.moveTo(x, gy0); c.lineTo(x, gy1); c.stroke(); }
+      for (let k = 0; k <= 8; k++) { const v = v0 + (v1 - v0) * k / 8; line(u0, v, u1, v); }
+      for (let k = 0; k <= 3; k++) { const u = u0 + (u1 - u0) * k / 3; line(u, v0, u, v1); }
       c.lineWidth = Math.max(3, F.s * 0.5); c.strokeStyle = '#fff';
-      c.beginPath(); c.moveTo(gx0, gy0); c.lineTo(gx1, gy0); c.lineTo(gx1, gy1); c.lineTo(gx0, gy1); c.stroke();
+      c.beginPath(); c.moveTo(...P(u0, v0)); c.lineTo(...P(u1, v0)); c.lineTo(...P(u1, v1)); c.lineTo(...P(u0, v1)); c.stroke();
       c.restore();
     }
     // corner arcs
     for (const [u, v] of [[0, 0], [FL, 0], [0, FW], [FL, FW]]) ellipse(u, v, 1);
-    function line(a, b, cc, d) { c.beginPath(); c.moveTo(X(a), Y(b)); c.lineTo(X(cc), Y(d)); c.stroke(); }
-    function box(u0, u1, v0, v1) { c.strokeRect(Math.min(X(u0), X(u1)), Y(v0), Math.abs(X(u1) - X(u0)), Y(v1) - Y(v0)); }
-    function ellipse(u, v, r) { c.beginPath(); c.ellipse(X(u), Y(v), r * F.sx, r * F.sy, 0, 0, Math.PI * 2); c.stroke(); }
-    function dot(u, v) { c.beginPath(); c.arc(X(u), Y(v), Math.max(3, F.s * 0.4), 0, Math.PI * 2); c.fill(); }
+    function rectPath(u0, v0, u1, v1) {
+      const [x0, y0] = P(u0, v0), [x1, y1] = P(u1, v1);
+      c.rect(Math.min(x0, x1), Math.min(y0, y1), Math.abs(x1 - x0), Math.abs(y1 - y0));
+    }
+    function fillRect(u0, v0, u1, v1) { c.beginPath(); rectPath(u0, v0, u1, v1); c.fill(); }
+    function box(u0, u1, v0, v1) { c.beginPath(); rectPath(u0, v0, u1, v1); c.stroke(); }
+    function line(a, b, cc, d) { c.beginPath(); c.moveTo(...P(a, b)); c.lineTo(...P(cc, d)); c.stroke(); }
+    function ellipse(u, v, r) { c.beginPath(); c.ellipse(...P(u, v), r * F.rx, r * F.ry, 0, 0, Math.PI * 2); c.stroke(); }
+    function dot(u, v) { c.beginPath(); c.arc(...P(u, v), Math.max(3, F.s * 0.4), 0, Math.PI * 2); c.fill(); }
   }
 
   // ---------- Little auto players ----------
@@ -831,13 +879,13 @@ const SOUNDS = {"trumpet": {"E4": "//uQZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
     const c = pc;
     c.drawImage(bg, 0, 0, W, H);
     const r = Math.max(9, F.s * 1.5);
-    const sorted = [...players].sort((a, b) => a.v - b.v);
+    const sorted = [...players].sort((a, b) => P(a.u, a.v)[1] - P(b.u, b.v)[1]);
     for (const p of sorted) {
-      const x = X(p.u), y = Y(p.v) - (p.moving ? Math.abs(Math.sin(p.phase)) * r * 0.25 : 0);
+      const [x, gy] = P(p.u, p.v), y = gy - (p.moving ? Math.abs(Math.sin(p.phase)) * r * 0.25 : 0);
       const col = state.teams[p.team].color;
       // shadow
       c.fillStyle = 'rgba(0,0,0,.25)';
-      c.beginPath(); c.ellipse(X(p.u), Y(p.v) + r * 0.9, r * 0.9, r * 0.35, 0, 0, Math.PI * 2); c.fill();
+      c.beginPath(); c.ellipse(x, gy + r * 0.9, r * 0.9, r * 0.35, 0, 0, Math.PI * 2); c.fill();
       // legs
       c.strokeStyle = '#222'; c.lineWidth = r * 0.28; c.lineCap = 'round';
       const sw = p.moving ? Math.sin(p.phase) * r * 0.4 : 0;
@@ -855,7 +903,7 @@ const SOUNDS = {"trumpet": {"E4": "//uQZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
       c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(p.num, x, y + r * 0.05);
     }
     // ball
-    const br = Math.max(6, F.s * 0.75), bx = X(ball.u), by = Y(ball.v);
+    const br = Math.max(6, F.s * 0.75), [bx, by] = P(ball.u, ball.v);
     c.fillStyle = 'rgba(0,0,0,.25)'; c.beginPath(); c.ellipse(bx, by + br * 0.9, br, br * 0.4, 0, 0, Math.PI * 2); c.fill();
     c.fillStyle = '#fff'; c.strokeStyle = '#222'; c.lineWidth = Math.max(1.5, br * 0.18);
     c.beginPath(); c.arc(bx, by, br, 0, Math.PI * 2); c.fill(); c.stroke();
@@ -871,7 +919,7 @@ const SOUNDS = {"trumpet": {"E4": "//uQZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
   function confetti(team) {
     const col = state.teams[team].color;
     const palette = [col, col, '#ffe600', '#fff', '#00e5ff', '#ff8a00'];
-    const cx = team ? W * 0.75 : W * 0.25;
+    const cx = portrait ? W * 0.5 : team ? W * 0.75 : W * 0.25;
     for (let i = 0; i < 220; i++) {
       const a = -Math.PI / 2 + (Math.random() - .5) * 1.6, s = 500 + Math.random() * 900;
       bits.push({ x: cx + (Math.random() - .5) * W * 0.2, y: H + 10, vx: Math.cos(a) * s * 0.6, vy: Math.sin(a) * s,

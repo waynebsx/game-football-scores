@@ -1,6 +1,6 @@
 // Goal Counter service worker: keeps the whole app available offline.
 // After changing any app file, bump VERSION so installed copies pick up the update.
-const VERSION = 'goal-counter-v2';
+const VERSION = 'goal-counter-v3';
 const FILES = [
   './',
   './index.html',
